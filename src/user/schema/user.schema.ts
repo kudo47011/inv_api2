@@ -24,7 +24,6 @@ export class User {
     type: String,
     required: true,
     enum: [Role.Admin, Role.Driver, Role.Employee, Role.Manager],
-    default: Role.Admin,
   })
   role: string;
 
@@ -33,6 +32,9 @@ export class User {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   user_updated: User;
+
+  @Prop({ default: 0 })
+  order: number
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

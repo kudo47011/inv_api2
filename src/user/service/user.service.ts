@@ -40,7 +40,7 @@ export class UserService {
             const user = await this.userModel.create(createUserDto);
             return await user.save();
         } catch (error) {
-            throw new HttpException(error.message, error.status);
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -48,7 +48,16 @@ export class UserService {
         try {
             return await this.userModel.updateOne({ _id: user_id }, updateUserDto);
         } catch (error) {
-            throw new HttpException(error.message, error.status);
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async increaseOrder(user_id) {
+        try {
+            const user = await this.userModel.findById(user_id);
+            return await this.userModel.updateOne({ _id: user_id }, {order: user.order + 1});
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -108,6 +117,14 @@ export class UserService {
           };
     }
 
+    async findToSelectManager() {
+        return await this.userModel.find({role: Role.Manager});
+    }
+
+    async findAllNotAdmin() {
+        return await this.userModel.find({role: { $ne: Role.Admin } });
+    }
+
     async findByUsername(username): Promise<User> {
         return await this.userModel.findOne({username: username}).exec();
     }
@@ -120,7 +137,8 @@ export class UserService {
             }
             return user
         } catch (error) {
-            throw new HttpException(error.message, error.status);
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

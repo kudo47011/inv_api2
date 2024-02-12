@@ -11,10 +11,10 @@ export class Branch {
   name: string;
 
   @Prop()
-  lat: string;
+  lat: number;
 
   @Prop()
-  lng: string;
+  lng: number;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   manager: User;

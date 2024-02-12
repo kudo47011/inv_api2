@@ -8,11 +8,11 @@ export class BranchCreateDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  lat: string;
+  lat: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  lng: string;
+  lng: number;
 
   @ApiProperty()
   @IsNotEmpty()

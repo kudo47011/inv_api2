@@ -21,6 +21,20 @@ export class UserController {
         return this.userService.findAll(+page, +limit, query);
     }
 
+    @Get('find')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.Manager, Role.Admin)
+    findToSelect() {
+        return this.userService.findToSelectManager();
+    }
+
+    @Get('all')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.Manager, Role.Admin)
+    findNotAdmin() {
+        return this.userService.findAllNotAdmin();
+    }
+
     @Post('')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(Role.Manager, Role.Admin)
@@ -33,6 +47,13 @@ export class UserController {
     @Roles(Role.Manager, Role.Admin)
     update(@Body() payload: UserUpdateDto, @Param('id') user_id) {
         return this.userService.update(user_id, payload);
+    }
+
+    @Patch('/new-password/:id')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.Manager, Role.Admin)
+    newPassword(@Body() payload: {new_pass: string}, @Param('id') user_id) {
+        return this.userService.newPassword(user_id, payload.new_pass);
     }
 
     @Delete(':id')

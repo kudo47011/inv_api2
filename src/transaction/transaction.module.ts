@@ -7,6 +7,7 @@ import { ProductModule } from 'src/product/product.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Transaction, TransactionSchema } from './schema/transaction.schema';
 import { InventoryModule } from 'src/inventory/inventory.module';
+import { WsModule } from 'src/ws/ws.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { InventoryModule } from 'src/inventory/inventory.module';
     BranchModule,
     ProductModule,
     InventoryModule,
+    WsModule,
     MongooseModule.forFeatureAsync([
       {
         name: Transaction.name,

@@ -1,14 +1,18 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Branch, BranchDocument } from '../schema/branch.schema';
 import { Model } from 'mongoose';
 import * as ModelDel from 'mongoose-delete'
 import { BranchCreateDto } from '../dto/create-branch.dto';
+import { User, UserDocument } from 'src/user/schema/user.schema';
+import { UserService } from 'src/user/service/user.service';
 
 @Injectable()
 export class BranchService {
     constructor(
         @InjectModel(Branch.name) private branchModel: Model<BranchDocument>,
+        @Inject(forwardRef(() => UserService))
+        private readonly userService: UserService,
         @InjectModel(Branch.name) private branchModelDel: ModelDel<BranchDocument>,
     ) {}
 
@@ -59,5 +63,18 @@ export class BranchService {
             page,
             last_page: Math.ceil(total / limit),
           };
+    }
+
+    async findAll2() {
+        return await this.branchModel.find().populate('manager')
+    }
+
+    async getBranchByManager(user_id) {
+        const user = await this.userService.findOne(user_id)
+        if (user.role == 'admin') {
+            return await this.branchModel.find().populate('manager')
+        } else {
+            return await this.branchModel.find({manager: user_id}).populate('manager')
+        } 
     }
 }

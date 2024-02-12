@@ -22,6 +22,7 @@ import { UserModule } from 'src/user/user.module';
     ]),
   ],
   providers: [BranchService],
-  controllers: [BranchController]
+  controllers: [BranchController],
+  exports: [BranchService]
 })
 export class BranchModule {}

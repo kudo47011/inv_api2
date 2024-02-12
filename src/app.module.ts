@@ -10,6 +10,10 @@ import { BranchModule } from './branch/branch.module';
 import { ProductModule } from './product/product.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { TransactionGateway } from './ws/transaction.gateway';
+import { WsModule } from './ws/ws.module';
 
 @Module({
   imports: [
@@ -34,8 +38,12 @@ import { TransactionModule } from './transaction/transaction.module';
     ProductModule,
     InventoryModule,
     TransactionModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
+    WsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TransactionGateway],
 })
 export class AppModule {}

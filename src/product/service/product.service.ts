@@ -43,6 +43,6 @@ export class ProductService {
     }
 
     async findAll() {
-        return await this.productModel.find();
+        return await this.productModel.find().populate('user_created');
     }
 }
