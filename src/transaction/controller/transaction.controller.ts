@@ -71,4 +71,12 @@ export class TransactionController {
     getAllTransaction(@Param('id') user_id: string) {
         return this.transactionService.getAllTransaction(user_id)
     }
+
+    @Get('/history')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(Role.Driver)
+    getDriverHistory(@Req() req) {
+        const { user } = req;
+        return this.transactionService.getDriverHistory(user.userid)
+    }
 }

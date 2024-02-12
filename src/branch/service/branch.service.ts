@@ -37,9 +37,6 @@ export class BranchService {
 
     async findOne(branch_id) {
         const branch = await this.branchModel.findById(branch_id);
-        if (!branch) {
-            throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-        }
         return branch;
     }
 

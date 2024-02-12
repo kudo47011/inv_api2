@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Transaction, TransactionSchema } from './schema/transaction.schema';
 import { InventoryModule } from 'src/inventory/inventory.module';
 import { WsModule } from 'src/ws/ws.module';
+import { DriverHistory, DriverHistorySchema } from './schema/driver-history.schema';
 
 @Module({
   imports: [
@@ -21,6 +22,18 @@ import { WsModule } from 'src/ws/ws.module';
         name: Transaction.name,
         useFactory: () => {
           const schema = TransactionSchema;
+          schema.plugin(require('mongoose-delete'), {
+            overrideMethods: true,
+          });
+          return schema;
+        },
+      },
+    ]),
+    MongooseModule.forFeatureAsync([
+      {
+        name: DriverHistory.name,
+        useFactory: () => {
+          const schema = DriverHistorySchema;
           schema.plugin(require('mongoose-delete'), {
             overrideMethods: true,
           });

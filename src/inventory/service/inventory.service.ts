@@ -9,6 +9,7 @@ import { Summary, SummaryDocument } from '../schema/summay.schema';
 import { Role } from 'src/utils/role.enum';
 import { UserService } from 'src/user/service/user.service';
 import { TransactionGateway } from 'src/ws/transaction.gateway';
+import { BranchService } from 'src/branch/service/branch.service';
 
 @Injectable()
 export class InventoryService {
@@ -21,6 +22,8 @@ export class InventoryService {
         private readonly userService: UserService,
         @Inject(forwardRef(() => TransactionGateway))
         private readonly transactionWs: TransactionGateway,
+        @Inject(forwardRef(() => BranchService))
+        private readonly branchService: BranchService,
     ) {}
 
     async addStock(dto: InventoryDto) {
@@ -91,11 +94,31 @@ export class InventoryService {
 
         const user = await this.userService.findOne(user_id);
         if (user.role == Role.Admin) {
-            const summary = await this.summaryModel.find({
+            let summary = await this.summaryModel.find({
                 data_of_date: {
                   $gte: date_list[6].data_of_date,
                 },
             }).sort({ data_of_date: 1 }).populate('branch')
+
+            for (let index = 0; index < summary.length; index++) {
+                const branch = await this.branchService.findOne(summary[index].branch)
+                if (!branch) {
+                    summary[index]['isRemove'] = true;
+                }
+            }
+
+            for (let index = 0; index < summary.length; index++) {
+                if (summary[index]['isRemove']) {
+                    delete summary[index]
+                }
+            }
+
+            summary = summary.reduce((acc, value) => {
+                if (value !== null) {
+                  acc.push(value);
+                }
+                return acc;
+              }, []);
     
             for (let index = 0; index < date_list.length; index++) {
                 for (let item of summary) {
